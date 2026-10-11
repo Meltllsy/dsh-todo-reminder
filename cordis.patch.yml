@@ -1,0 +1,8 @@
+# dsh-todo-reminder bundle 层：插入插件行。
+# host 半（exports "."）跑在 host 进程（TodoService + webServer API + 定时调度 + agent 工具 + 公告）；
+# client 半（exports "./client"，/plugins/<id>/client.js）跑在 Web GUI（全局待办面板 + 提醒 toast + 待办 Dock）。
+# 本插件是**全局个人待办**，不监听任何会话事件；会话提醒见 dsh-session-attention。
+- insert:
+    - id: todo-reminder
+      name: 'dsh-todo-reminder'
+      config: {}
