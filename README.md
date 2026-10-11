@@ -103,6 +103,4 @@ node scripts/check-compat.mjs --from <dir>  # 检查指定目录（CI 用）
 
 > 与 [dsh-session-attention](https://github.com/Meltllsy/dsh-session-attention) 是各自独立的插件，互不依赖，可单独安装。
 
-## 截图
 
-> 待补：截图放 `docs/` 下，然后把这一行换成 `![面板](docs/panel.png)`。
