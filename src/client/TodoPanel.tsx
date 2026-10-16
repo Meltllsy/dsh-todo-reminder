@@ -29,7 +29,8 @@ function formatDue(ms: number): string {
   return `${d.getMonth() + 1}月${d.getDate()}日 ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-export function TodoPanel(): ReactElement {
+export function TodoPanel(props: { onClose?: () => void }): ReactElement {
+  const onClose = props.onClose
   const { data } = useSyncExternalStore(todoStore.subscribe, todoStore.getSnapshot)
   const soundByStyle = data?.settings.soundByStyle ?? DEFAULT_TODO_SETTINGS.soundByStyle
   const snoozeMinutes = data?.settings.snoozeMinutes ?? DEFAULT_TODO_SETTINGS.snoozeMinutes
@@ -164,7 +165,7 @@ export function TodoPanel(): ReactElement {
           className="todo-btn"
           title="关闭面板（Esc 也可以）"
           aria-label="关闭"
-          onClick={() => todoStore.setPanel(false)}
+          onClick={() => { todoStore.setPanel(false); onClose?.() }}
         >
           ✕
         </button>
