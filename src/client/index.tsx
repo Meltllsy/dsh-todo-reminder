@@ -11,6 +11,7 @@
 import { createRoot, type Root } from 'react-dom/client'
 import { ReminderLayer } from './ReminderLayer.tsx'
 import { TodoPanel } from './TodoPanel.tsx'
+import { registerPanel, seatsAvailable, syncPanelWithLayout } from './panel-seat.tsx'
 import { mountSidebarEntry } from './sidebar-entry.ts'
 import { injectStyles } from './styles.ts'
 import { todoStore } from './todo-store.ts'
@@ -153,6 +154,10 @@ export const inject = ['sessions']
 /** 客户端上下文最小接口（本插件不读会话字段）。 */
 export interface TodoClientContext {
   readonly sessions?: unknown
+  /** 官方座位服务（0.2 起）；缺席时退回 DOM 注入。 */
+  readonly slots?: { inject(key: string, callback: () => () => void): () => void, register(options: Record<string, unknown>, component: unknown): () => void }
+  /** cordis 上下文取值（本插件只取 layout）。 */
+  readonly get?: (name: string) => unknown
 }
 
 export function apply(_ctx: TodoClientContext): () => void {
@@ -160,8 +165,16 @@ export function apply(_ctx: TodoClientContext): () => void {
 
   const disposers: Array<() => void> = []
   try {
-    disposers.push(mountSidebarEntry())
-    disposers.push(mountPanel())
+    // 0.2 起优先用外壳自己的面板座位：行框/高亮/折叠/切换都由外壳拥有，
+    // 页面只在被选中时挂载 —— 既不会盖住别的页面，也不会被别的插件带歪样式。
+    if (seatsAvailable(_ctx)) {
+      disposers.push(registerPanel(_ctx))
+      disposers.push(syncPanelWithLayout(_ctx))
+    } else {
+      // 旧版外壳没有 sidebar.panellist / main 座位，退回 DOM 注入。
+      disposers.push(mountSidebarEntry())
+      disposers.push(mountPanel())
+    }
     disposers.push(mountReminderLayer())
   } catch (error) {
     console.error('[dsh-todo-reminder] mount failed:', error)
