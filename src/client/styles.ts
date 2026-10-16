@@ -37,6 +37,8 @@ html[data-dsh-todo-active] [data-dsh-todo-host] > :not([data-dsh-todo-view]) {
 [data-dsh-todo-entry] {
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* 明确左对齐：外壳若覆盖了 flex，也不会变成居中按钮 */
+  text-align: left;
   gap: 8px;
   width: 100%;
   height: 32px;
@@ -54,8 +56,9 @@ html[data-dsh-todo-active] [data-dsh-todo-host] > :not([data-dsh-todo-view]) {
   background: var(--dsw-specific-sidebar-nav-item-hover);
   color: var(--dsw-alias-label-primary);
 }
+/* 选中态只做「更亮 + 加粗」，不画背景块：面板状态万一过期，也不会在侧边栏留下一块灰底。 */
 [data-dsh-todo-entry][data-active] {
-  background: var(--dsw-specific-sidebar-nav-item-active);
+  background: transparent;
   color: var(--dsw-alias-label-primary);
   font-weight: 600;
 }
@@ -393,7 +396,9 @@ html[data-dsh-todo-active] [data-dsh-todo-host] > :not([data-dsh-todo-view]) {
 
 /** 注入样式（幂等）。 */
 export function injectStyles(): void {
-  if (document.querySelector('style[data-dsh-todo-css]') !== null) return
+  // 旧节点必须换掉：早期写成「已存在就 return」，升级后新 CSS 永远注入不进去，
+  // 入口便退回浏览器默认 button 样式（侧边栏灰底方块就是这个原因）。
+  document.querySelectorAll('style[data-dsh-todo-css]').forEach((el) => el.remove())
   const style = document.createElement('style')
   style.dataset.dshTodoCss = ''
   style.textContent = TODO_CSS

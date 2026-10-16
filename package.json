@@ -1,6 +1,6 @@
 {
   "name": "dsh-todo-reminder",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "DSH 全局个人待办插件：侧边栏「待办」面板 + 右侧待办条（悬停探出 / 快到点自动弹开）+ 到期提醒（自定义音效）+ 完成需确认，另给 agent 提供 todo_* 工具。与 DSH 会话无关。",
   "type": "module",
   "main": "./lib/index.js",
