@@ -18,7 +18,8 @@ export const TODO_CSS = `
 /* --- 面板接管中心列（独立页面式，与任务看板 / SSH 一致） ------------------ */
 /* DSH 0.1.6 移除了 data-pane 标记，中心列改用 CSS-module 类名（centerCol）；
    这里同时兼容旧标记与新类名，否则容器定位会失效。 */
-[data-pane='conversation'], [class*='centerCol'], [class*='_centerCol'] { position: relative; }
+/* 只给自己挂载的宿主定位：全局匹配 centerCol 会连带影响其他插件的容器。 */
+[data-dsh-todo-host] { position: relative; }
 
 [data-dsh-todo-view] {
   position: absolute;
@@ -29,9 +30,7 @@ export const TODO_CSS = `
   background: var(--dsw-alias-bg-base);
 }
 html[data-dsh-todo-active] [data-dsh-todo-view] { display: block; }
-html[data-dsh-todo-active] [data-pane='conversation'] > :not([data-dsh-todo-view]),
-html[data-dsh-todo-active] [class*='centerCol'] > :not([data-dsh-todo-view]),
-html[data-dsh-todo-active] [class*='_centerCol'] > :not([data-dsh-todo-view]) {
+html[data-dsh-todo-active] [data-dsh-todo-host] > :not([data-dsh-todo-view]) {
   display: none !important;
 }
 /* --- 侧边栏入口 ---------------------------------------------------------- */
